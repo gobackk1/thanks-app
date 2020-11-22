@@ -1,0 +1,39 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "project": ["tsconfig.json"]
+  },
+  "rules": {
+    // webpack で drop_console するので
+    "no-console": "off",
+    // semi は フォーマッターに任せるので
+    "semi": "off",
+    "@typescript-eslint/no-extra-semi": "off",
+    // typescript なので
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@", "./src"],
+          ["~redux", "./src/scripts/redux"]
+        ],
+        "extensions": [".ts", ".js", ".tsx", ".json"]
+      }
+    }
+  }
+}
