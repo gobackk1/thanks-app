@@ -7,18 +7,22 @@ import {
   ListItemIcon,
   ListItem,
   ListItemText,
-  makeStyles
+  makeStyles,
+  CssBaseline
 } from '@material-ui/core'
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded'
 import RedeemRoundedIcon from '@material-ui/icons/RedeemRounded'
+import { useHistory } from 'react-router-dom'
 
 const list = [
-  { text: 'ホーム', icon: <HomeRoundedIcon /> },
-  { text: 'リワード', icon: <RedeemRoundedIcon /> }
+  { text: 'ホーム', icon: <HomeRoundedIcon />, path: '/' },
+  { text: 'リワード', icon: <RedeemRoundedIcon />, path: '/rewards' }
 ]
 
 export const PageLayout: React.FC = ({ children }) => {
   const styles = useStyles()
+  const history = useHistory()
+
   return (
     <div className={styles.root}>
       {/* <AppBar position="fixed">
@@ -30,9 +34,11 @@ export const PageLayout: React.FC = ({ children }) => {
         variant="permanent"
         anchor="left"
       >
+        <div>check</div>
+        <CssBaseline />
         <List>
-          {list.map(({ text, icon }, i) => (
-            <ListItem button key={i}>
+          {list.map(({ text, icon, path }, i) => (
+            <ListItem button key={i} onClick={() => history.push(path)}>
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
