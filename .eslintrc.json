@@ -13,7 +13,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module",
-    "project": ["tsconfig.json"]
+    "project": ["tsconfig.json", "functions/tsconfig.json"]
   },
   "rules": {
     // webpack で drop_console するので
