@@ -19,7 +19,7 @@ export const App: React.FC = () => (
       <PageLayout>
         <Switch>
           <Route path="/campany/rewards" exact component={Rewards} />
-          <Route path="/campany" exact component={Home} />
+          <Route path="/company" exact component={Home} />
           <Route path="/login" exact component={Login} />
         </Switch>
       </PageLayout>
