@@ -13,8 +13,8 @@ type LoginFormValue = {
 type ReturnType = {
   signup: (value: LoginFormValue) => Promise<void>
   login: (value: LoginFormValue) => Promise<void>
-  createCompany: (name: string) => Promise<void>
   logout: () => Promise<void>
+  setAdminUser: (param: { password: string; uid: string }) => Promise<void>
 }
 
 const db = firebase.firestore()
@@ -52,20 +52,13 @@ export const useFirebase = (): ReturnType => {
     [showSnackbar]
   )
 
-  const createCompany = React.useCallback(
-    async (name: string) => {
-      const company: T.Company = {
-        name,
-        profile: 'プロフィールを入力してください',
-        // 初期画像探す
-        avatarURL: 'default'
-      }
-      await db.collection('company').add(company)
-      setState(state => ({ ...state, company }))
-      history.push('company')
-    },
-    [setState, history]
-  )
+  const setAdminUser = React.useCallback(async ({ password, uid }) => {
+    const result = await firebase
+      .app()
+      .functions('asia-northeast1')
+      .httpsCallable('setAdminUser')({ password, uid })
+    console.log(result, 'result')
+  }, [])
 
-  return { signup, createCompany, login, logout }
+  return { signup, login, logout, setAdminUser }
 }
