@@ -6,6 +6,8 @@ export const AdminRoute: React.FC<RouteProps & { component: React.FC }> = ({
   component: Component,
   ...props
 }) => {
-  const [{ isAdmin }] = React.useContext(LoginUser.Context)
-  return <Route {...props} render={() => (isAdmin ? <Component /> : <Redirect to="/company" />)} />
+  const [{ isAdmin, isLoggingIn }] = React.useContext(LoginUser.Context)
+  return isLoggingIn ? null : (
+    <Route {...props} render={() => (isAdmin ? <Component /> : <Redirect to="/company" />)} />
+  )
 }

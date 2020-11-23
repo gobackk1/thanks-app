@@ -6,6 +6,8 @@ export const PrivateRoute: React.FC<RouteProps & { component: React.FC }> = ({
   component: Component,
   ...props
 }) => {
-  const [{ uid }] = React.useContext(LoginUser.Context)
-  return <Route {...props} render={() => (uid ? <Component /> : <Redirect to="/login" />)} />
+  const [{ uid, isLoggingIn }] = React.useContext(LoginUser.Context)
+  return isLoggingIn ? null : (
+    <Route {...props} render={() => (uid ? <Component /> : <Redirect to="/login" />)} />
+  )
 }

@@ -4,8 +4,12 @@ import { createContext, SetStateAction } from 'react'
 export type State = {
   isAdmin: boolean
   uid: string | null
+  isLoggingIn: boolean
 }
 
 export type ContextType = [State, React.Dispatch<SetStateAction<State>>]
 
-export const Context = createContext<ContextType>([{ isAdmin: false, uid: null }, () => undefined])
+export const Context = createContext<ContextType>([
+  { isAdmin: false, uid: null, isLoggingIn: true },
+  () => undefined
+])

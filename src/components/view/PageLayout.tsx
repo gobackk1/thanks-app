@@ -5,10 +5,20 @@ import RedeemRoundedIcon from '@material-ui/icons/RedeemRounded'
 import { useHistory } from 'react-router-dom'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useAuthentication } from '@/hooks'
+import PeopleRoundedIcon from '@material-ui/icons/PeopleRounded'
+import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded'
+import ListAltRoundedIcon from '@material-ui/icons/ListAltRounded'
+import { LoadingSpinner } from '../common'
 
 const list = [
   { text: 'ホーム', icon: <HomeRoundedIcon />, path: '/' },
   { text: 'リワード', icon: <RedeemRoundedIcon />, path: '/rewards' }
+]
+
+const adminList = [
+  { text: 'ユーザー', icon: <PeopleRoundedIcon />, path: '/manage/users' },
+  { text: 'カタログ', icon: <ImportContactsRoundedIcon />, path: '/manage/rewards/catalog' },
+  { text: 'オーダー', icon: <ListAltRoundedIcon />, path: '/manage/rewards/orders' }
 ]
 
 export const PageLayout: React.FC = ({ children }) => {
@@ -17,7 +27,11 @@ export const PageLayout: React.FC = ({ children }) => {
   useAuthentication()
   const [state] = React.useContext(LoginUser.Context)
   console.log(state, 'PageLayout')
-  return (
+  return state.isLoggingIn ? (
+    <div className={styles.spinner}>
+      <LoadingSpinner />
+    </div>
+  ) : (
     <div className={styles.root}>
       {state.uid && (
         <Drawer
@@ -28,14 +42,19 @@ export const PageLayout: React.FC = ({ children }) => {
         >
           <List>
             {list.map(({ text, icon, path }, i) => (
-              // currentuser contextを作って出し分ける
               <ListItem button key={i} onClick={() => history.push(path)}>
                 <ListItemIcon>{icon}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
           </List>
-          {state.isAdmin && 'admin用リンク'}
+          {state.isAdmin &&
+            adminList.map(({ text, icon, path }, i) => (
+              <ListItem button key={i} onClick={() => history.push(path)}>
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
         </Drawer>
       )}
 
@@ -58,5 +77,9 @@ const useStyles = makeStyles({
   },
   drawerPaper: {
     width: 240
+  },
+  spinner: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 })

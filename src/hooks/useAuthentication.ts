@@ -9,17 +9,18 @@ export const useAuthentication = () => {
 
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged(async user => {
+      setState(state => ({ ...state, isLoggingIn: true }))
       if (user) {
         console.log(`debug: login ${user.uid}`)
+
         const result = await user.getIdTokenResult(true)
-        console.log(result.claims)
         if (result.claims.admin === true) {
-          setState(state => ({ ...state, uid: user.uid, isAdmin: true }))
+          setState(state => ({ ...state, uid: user.uid, isAdmin: true, isLoggingIn: false }))
         } else {
           // NOTE: uid を見てログインを判断する
-          setState(state => ({ ...state, uid: user.uid }))
+          setState(state => ({ ...state, uid: user.uid, isLoggingIn: false }))
         }
-        history.push('company')
+        // history.push('company')
       } else {
         // ログアウト時の処理
         setState(state => ({ ...state, uid: null }))
