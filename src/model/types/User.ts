@@ -3,7 +3,6 @@ export type User = {
   email: string
   profile: string
   avatarURL: string
-  isAdmin: boolean
   points: {
     available: number
     recieved: number

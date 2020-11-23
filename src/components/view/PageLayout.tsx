@@ -18,14 +18,13 @@ export const PageLayout: React.FC = ({ children }) => {
   console.log(state.uid)
   return (
     <div className={styles.root}>
-      <Drawer
-        className={styles.drawer}
-        classes={{ paper: styles.drawerPaper }}
-        variant="permanent"
-        anchor="left"
-      >
-        {!state.uid && 'ログインボタンをここに置く'}
-        {state.company ? (
+      {state.uid && (
+        <Drawer
+          className={styles.drawer}
+          classes={{ paper: styles.drawerPaper }}
+          variant="permanent"
+          anchor="left"
+        >
           <List>
             {list.map(({ text, icon, path }, i) => (
               // currentuser contextを作って出し分ける
@@ -35,10 +34,9 @@ export const PageLayout: React.FC = ({ children }) => {
               </ListItem>
             ))}
           </List>
-        ) : (
-          '組織を選択してください'
-        )}
-      </Drawer>
+        </Drawer>
+      )}
+
       <main className={styles.main}>{children}</main>
     </div>
   )
