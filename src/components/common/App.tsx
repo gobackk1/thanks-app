@@ -1,7 +1,18 @@
 import React from 'react'
 import firebase from 'firebase'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
-import { Rewards, PageLayout, TotalProvider, Home, Login } from '@/components'
+import {
+  Rewards,
+  PageLayout,
+  TotalProvider,
+  Home,
+  Login,
+  AdminRoute,
+  PrivateRoute,
+  ManageRewardCatalog,
+  ManageRewardOrders,
+  ManageUsers
+} from '@/components'
 
 firebase.initializeApp({
   apiKey: process.env.API_KEY,
@@ -18,9 +29,12 @@ export const App: React.FC = () => (
     <TotalProvider>
       <PageLayout>
         <Switch>
-          <Route path="/campany/rewards" exact component={Rewards} />
-          <Route path="/company" exact component={Home} />
           <Route path="/login" exact component={Login} />
+          <PrivateRoute path="/company" exact component={Home} />
+          <PrivateRoute path="/campany/rewards" exact component={Rewards} />
+          <AdminRoute path="/manage/users" component={ManageUsers} />
+          <AdminRoute path="/manage/rewards/catalog" component={ManageRewardCatalog} />
+          <AdminRoute path="/manage/rewards/orders" component={ManageRewardOrders} />
         </Switch>
       </PageLayout>
     </TotalProvider>
