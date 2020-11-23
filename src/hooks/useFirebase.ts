@@ -5,14 +5,16 @@ import * as T from '@/model/types'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useHistory } from 'react-router-dom'
 
-type CreateUserFormValue = {
+type LoginFormValue = {
   email: string
   password: string
 }
 
 type ReturnType = {
-  signup: (value: CreateUserFormValue) => void
+  signup: (value: LoginFormValue) => Promise<void>
+  login: (value: LoginFormValue) => Promise<void>
   createCompany: (name: string) => Promise<void>
+  logout: () => Promise<void>
 }
 
 const db = firebase.firestore()
@@ -22,8 +24,21 @@ export const useFirebase = (): ReturnType => {
   const [state, setState] = React.useContext(LoginUser.Context)
   const history = useHistory()
 
+  const login = React.useCallback(
+    async ({ email, password }: LoginFormValue) => {
+      await firebase.auth().signInWithEmailAndPassword(email, password)
+      history.push('company')
+    },
+    [history]
+  )
+
+  const logout = React.useCallback(async () => {
+    if (!confirm('本当にログアウトしますか?')) return
+    await firebase.auth().signOut()
+  }, [])
+
   const signup = React.useCallback(
-    async ({ email, password }: CreateUserFormValue) => {
+    async ({ email, password }: LoginFormValue) => {
       const credit = await firebase.auth().createUserWithEmailAndPassword(email, password)
       await credit.user?.sendEmailVerification({
         url: 'http://localhost:8080/registration'
@@ -52,5 +67,5 @@ export const useFirebase = (): ReturnType => {
     [setState, history]
   )
 
-  return { signup, createCompany }
+  return { signup, createCompany, login, logout }
 }
