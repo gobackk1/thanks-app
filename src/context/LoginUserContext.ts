@@ -3,9 +3,9 @@ import * as T from '@/model/types'
 
 export type State = {
   company: T.Company | null
-  user: T.User | null
+  uid: string | null
 }
 
 export type ContextType = [State, React.Dispatch<SetStateAction<State>>]
 
-export const Context = createContext<ContextType>([{ company: null, user: null }, () => undefined])
+export const Context = createContext<ContextType>([{ company: null, uid: null }, () => undefined])

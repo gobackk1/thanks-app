@@ -1,7 +1,7 @@
 import React from 'react'
 import firebase from 'firebase'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
-import { LP, Rewards, PageLayout, SnackbarProvider, Registration, Home } from '@/components'
+import { LP, Rewards, PageLayout, TotalProvider, Registration, Home } from '@/components'
 
 firebase.initializeApp({
   apiKey: process.env.API_KEY,
@@ -13,22 +13,17 @@ firebase.initializeApp({
   appId: process.env.APP_ID
 })
 
-export const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <SnackbarProvider
-        autoHideDuration={5000}
-        position={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <PageLayout>
-          <Switch>
-            <Route path="/" exact component={LP} />
-            <Route path="/registration" exact component={Registration} />
-            <Route path="/campany/rewards" exact component={Rewards} />
-            <Route path="/campany" exact component={Home} />
-          </Switch>
-        </PageLayout>
-      </SnackbarProvider>
-    </BrowserRouter>
-  )
-}
+export const App: React.FC = () => (
+  <BrowserRouter>
+    <TotalProvider>
+      <PageLayout>
+        <Switch>
+          <Route path="/" exact component={LP} />
+          <Route path="/registration" exact component={Registration} />
+          <Route path="/campany/rewards" exact component={Rewards} />
+          <Route path="/campany" exact component={Home} />
+        </Switch>
+      </PageLayout>
+    </TotalProvider>
+  </BrowserRouter>
+)
