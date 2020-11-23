@@ -11,8 +11,14 @@ export const useAuthentication = () => {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         console.log(`debug: login ${user.uid}`)
-        // NOTE: uid を見てログインを判断する
-        setState(state => ({ ...state, uid: user.uid }))
+        const result = await user.getIdTokenResult(true)
+        console.log(result.claims)
+        if (result.claims.admin === true) {
+          setState(state => ({ ...state, uid: user.uid, isAdmin: true }))
+        } else {
+          // NOTE: uid を見てログインを判断する
+          setState(state => ({ ...state, uid: user.uid }))
+        }
         history.push('company')
       } else {
         // ログアウト時の処理

@@ -5,6 +5,7 @@ import RedeemRoundedIcon from '@material-ui/icons/RedeemRounded'
 import { useHistory } from 'react-router-dom'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useAuthentication } from '@/hooks'
+
 const list = [
   { text: 'ホーム', icon: <HomeRoundedIcon />, path: '/' },
   { text: 'リワード', icon: <RedeemRoundedIcon />, path: '/rewards' }
@@ -15,7 +16,7 @@ export const PageLayout: React.FC = ({ children }) => {
   const history = useHistory()
   useAuthentication()
   const [state] = React.useContext(LoginUser.Context)
-  console.log(state.uid)
+  console.log(state, 'PageLayout')
   return (
     <div className={styles.root}>
       {state.uid && (
@@ -34,6 +35,7 @@ export const PageLayout: React.FC = ({ children }) => {
               </ListItem>
             ))}
           </List>
+          {state.isAdmin && 'admin用リンク'}
         </Drawer>
       )}
 
