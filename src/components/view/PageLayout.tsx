@@ -11,7 +11,7 @@ import ListAltRoundedIcon from '@material-ui/icons/ListAltRounded'
 import { LoadingSpinner } from '../common'
 
 const list = [
-  { text: 'ホーム', icon: <HomeRoundedIcon />, path: '/' },
+  { text: 'ホーム', icon: <HomeRoundedIcon />, path: '/company' },
   { text: 'リワード', icon: <RedeemRoundedIcon />, path: '/rewards' }
 ]
 
