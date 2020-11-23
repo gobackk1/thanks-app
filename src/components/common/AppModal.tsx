@@ -8,6 +8,7 @@ import {
   createStyles,
   Typography
 } from '@material-ui/core'
+import { useEventListener } from '@/hooks'
 
 type Props = {
   title: string
@@ -17,8 +18,8 @@ type Props = {
 export const AppModal: React.FC<Props> = ({ children, title, renderButton }) => {
   const [open, setOpen] = React.useState<boolean>(false)
   const styles = useStyles()
-
   const props = React.useMemo(() => ({ onClick: () => setOpen(true) }), [])
+  useEventListener('closeModal', () => setOpen(false))
 
   return (
     <div>
