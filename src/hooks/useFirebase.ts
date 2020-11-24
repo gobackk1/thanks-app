@@ -27,16 +27,23 @@ export const useFirebase = (): ReturnType => {
 
   const login = React.useCallback(
     async ({ email, password }: LoginFormValue) => {
-      await firebase.auth().signInWithEmailAndPassword(email, password)
-      history.push('company')
+      setState(state => ({ ...state, isLoggingIn: true }))
+      try {
+        await firebase.auth().signInWithEmailAndPassword(email, password)
+        history.push('/company')
+      } catch (e) {
+        // todo error handling
+        setState(state => ({ ...state, isLoggingIn: false }))
+      }
     },
-    [history]
+    [history, setState]
   )
 
   const logout = React.useCallback(async () => {
     if (!confirm('本当にログアウトしますか?')) return
     await firebase.auth().signOut()
-  }, [])
+    setState(state => ({ ...state, isLoggingIn: false }))
+  }, [setState])
 
   const signup = React.useCallback(
     async ({ email, password }: LoginFormValue) => {
