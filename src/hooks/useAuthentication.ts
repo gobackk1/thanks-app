@@ -9,7 +9,6 @@ export const useAuthentication = () => {
 
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged(async user => {
-      setState(state => ({ ...state, isLoggingIn: true }))
       if (user) {
         console.log(`debug: login ${user.uid}`)
 
@@ -20,11 +19,10 @@ export const useAuthentication = () => {
           // NOTE: uid を見てログインを判断する
           setState(state => ({ ...state, uid: user.uid, isLoggingIn: false }))
         }
-        // history.push('company')
       } else {
-        // ログアウト時の処理
-        setState(state => ({ ...state, uid: null }))
-        history.push('login')
+        console.log(`debug: logout`)
+        setState(state => ({ ...state, uid: null, isLogginIn: false }))
+        history.push('/login')
       }
     })
   }, [setState, history])
