@@ -15,6 +15,7 @@ type ReturnType = {
   login: (value: LoginFormValue) => Promise<void>
   logout: () => Promise<void>
   setAdminUser: (param: { password: string; uid: string }) => Promise<void>
+  currentUser: firebase.User | null
 }
 
 const db = firebase.firestore()
@@ -60,5 +61,7 @@ export const useFirebase = (): ReturnType => {
     console.log(result, 'result')
   }, [])
 
-  return { signup, login, logout, setAdminUser }
+  const currentUser = firebase.auth().currentUser
+
+  return { signup, login, logout, setAdminUser, currentUser }
 }

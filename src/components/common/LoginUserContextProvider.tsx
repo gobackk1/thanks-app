@@ -5,7 +5,7 @@ export const LoginUserContextProvider: React.FC = ({ children }) => {
   const [state, setState] = React.useState<LoginUser.State>({
     uid: null,
     isAdmin: false,
-    isLoggingIn: true
+    isLoggingIn: false
   })
 
   return (

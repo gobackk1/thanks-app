@@ -10,6 +10,6 @@ export type State = {
 export type ContextType = [State, React.Dispatch<SetStateAction<State>>]
 
 export const Context = createContext<ContextType>([
-  { isAdmin: false, uid: null, isLoggingIn: true },
+  { isAdmin: false, uid: null, isLoggingIn: false },
   () => undefined
 ])
