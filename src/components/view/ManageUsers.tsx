@@ -21,6 +21,7 @@ import * as UpdateUserModal from '@/context/UpdateUserModalContext'
 type User = T.User & { uid: string }
 
 export const ManageUsers: React.FC = () => {
+  // TODO ここのstate は redux に移すかも
   const [users, setUsers] = React.useState<User[]>([])
   const { deleteUser } = useFirebase()
   const { openUpdateUserModal } = React.useContext(UpdateUserModal.Context)
