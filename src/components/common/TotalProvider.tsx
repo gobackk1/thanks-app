@@ -1,6 +1,7 @@
 import React from 'react'
 import { LoginUserContextProvider } from './LoginUserContextProvider'
 import { SnackbarProvider } from './SnackbarProvider'
+import { UpdateUserModalProvider } from '@/components'
 
 export const TotalProvider: React.FC = ({ children }) => {
   return (
@@ -9,7 +10,7 @@ export const TotalProvider: React.FC = ({ children }) => {
         autoHideDuration={5000}
         position={{ vertical: 'top', horizontal: 'center' }}
       >
-        {children}
+        <UpdateUserModalProvider>{children}</UpdateUserModalProvider>
       </SnackbarProvider>
     </LoginUserContextProvider>
   )
