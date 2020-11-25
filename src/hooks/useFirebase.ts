@@ -5,18 +5,19 @@ import * as T from '@/model/types'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useHistory } from 'react-router-dom'
 
-type LoginFormValue = {
+type Authentication = {
   email: string
   password: string
 }
 
 type ReturnType = {
-  signup: (value: LoginFormValue) => Promise<void>
-  login: (value: LoginFormValue) => Promise<void>
+  signup: (value: Authentication) => Promise<void>
+  login: (value: Authentication) => Promise<void>
   logout: () => Promise<void>
-  setAdminUser: (param: { password: string; uid: string }) => Promise<void>
+  setAdminUser: (param: { password: string; uid: string; isAdmin: boolean }) => Promise<void>
   currentUser: firebase.User | null
   getUsers: () => Promise<T.User[]>
+  createUser: (value: Authentication) => Promise<void>
 }
 
 const db = firebase.firestore()
@@ -27,7 +28,7 @@ export const useFirebase = (): ReturnType => {
   const history = useHistory()
 
   const login = React.useCallback(
-    async ({ email, password }: LoginFormValue) => {
+    async ({ email, password }: Authentication) => {
       setState(state => ({ ...state, isLoggingIn: true }))
       try {
         await firebase.auth().signInWithEmailAndPassword(email, password)
@@ -47,7 +48,7 @@ export const useFirebase = (): ReturnType => {
   }, [setState])
 
   const signup = React.useCallback(
-    async ({ email, password }: LoginFormValue) => {
+    async ({ email, password }: Authentication) => {
       const credit = await firebase.auth().createUserWithEmailAndPassword(email, password)
       await credit.user?.sendEmailVerification({
         url: 'http://localhost:8080/registration'
@@ -61,12 +62,12 @@ export const useFirebase = (): ReturnType => {
     [showSnackbar]
   )
 
-  const setAdminUser = React.useCallback(async ({ password, uid }) => {
+  const setAdminUser = React.useCallback(async params => {
     const result = await firebase
       .app()
       .functions('asia-northeast1')
-      .httpsCallable('setAdminUser')({ password, uid })
-    console.log(result, 'result')
+      .httpsCallable('setAdminUser')(params)
+    console.log('setAdminUser', result)
   }, [])
 
   const currentUser = firebase.auth().currentUser
@@ -80,5 +81,12 @@ export const useFirebase = (): ReturnType => {
     return users
   }, [])
 
-  return { signup, login, logout, setAdminUser, currentUser, getUsers }
+  const createUser = React.useCallback(async (values: Authentication) => {
+    await firebase
+      .app()
+      .functions('asia-northeast1')
+      .httpsCallable('createUser')(values)
+  }, [])
+
+  return { signup, login, logout, setAdminUser, currentUser, getUsers, createUser }
 }
