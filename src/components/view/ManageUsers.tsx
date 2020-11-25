@@ -38,7 +38,7 @@ export const ManageUsers: React.FC = () => {
                 if (user.email === changeData.email) {
                   return { ...changeData, uid }
                 }
-                return { ...user, uid }
+                return user
               })
             )
           } else if (change.type === 'removed') {
