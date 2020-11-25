@@ -4,6 +4,8 @@ service cloud.firestore {
     match /company/{company_id} {
       allow read,create,delete,update: if true
     }
-
+    match /users/{uid} {
+      allow read,create,delete,update: if true
+    }
   }
 }
