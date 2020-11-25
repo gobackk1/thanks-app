@@ -17,7 +17,7 @@ export const useAuthentication = () => {
           setState(state => ({ ...state, uid: user.uid, isAdmin: true, isLoggingIn: false }))
         } else {
           // NOTE: uid を見てログインを判断する
-          setState(state => ({ ...state, uid: user.uid, isLoggingIn: false }))
+          setState(state => ({ ...state, uid: user.uid, isAdmin: false, isLoggingIn: false }))
         }
       } else {
         console.log(`debug: logout`)
