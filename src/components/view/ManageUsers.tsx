@@ -1,4 +1,3 @@
-import { useFirebase } from '@/hooks'
 import {
   Paper,
   Table,
@@ -12,21 +11,43 @@ import {
 import React from 'react'
 import * as T from '@/model/types'
 import { Visibility } from '@material-ui/icons'
+import { CreateUserModal } from '@/components'
+import firebase from 'firebase/app'
 
 export const ManageUsers: React.FC = () => {
-  const { getUsers } = useFirebase()
   const [users, setUsers] = React.useState<T.User[]>([])
 
-  const fetchUsersData = React.useCallback(async () => {
-    setUsers(await getUsers())
-  }, [setUsers, getUsers])
-
   React.useEffect(() => {
-    fetchUsersData()
-  }, [fetchUsersData])
+    const unsubscribe = firebase
+      .firestore()
+      .collection('users')
+      .onSnapshot(querySnapshot => {
+        for (const change of querySnapshot.docChanges()) {
+          if (change.type === 'added') {
+            setUsers(users => [...users, change.doc.data() as T.User])
+          } else if (change.type === 'modified') {
+            setUsers(users =>
+              users.map(user => {
+                const changeData = change.doc.data() as T.User
+                if (user.email === changeData.email) {
+                  return changeData
+                }
+                return user
+              })
+            )
+          } else if (change.type === 'removed') {
+            setUsers(users => users.filter(user => user.email !== change.doc.data().email))
+          }
+        }
+      })
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   return (
     <>
+      <CreateUserModal />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
