@@ -38,7 +38,7 @@ export const ManageUsers: React.FC = () => {
               users.map(user => {
                 const changeData = change.doc.data() as T.User
                 const uid = change.doc.id
-                if (user.email === changeData.email) {
+                if (user.uid === uid) {
                   return { ...changeData, uid }
                 }
                 return user
