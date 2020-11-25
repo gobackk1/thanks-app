@@ -18,6 +18,7 @@ type ReturnType = {
   currentUser: firebase.User | null
   getUsers: () => Promise<T.User[]>
   createUser: (value: Authentication) => Promise<void>
+  deleteUser: (uid: string) => Promise<void>
 }
 
 const db = firebase.firestore()
@@ -88,5 +89,12 @@ export const useFirebase = (): ReturnType => {
       .httpsCallable('createUser')(values)
   }, [])
 
-  return { signup, login, logout, setAdminUser, currentUser, getUsers, createUser }
+  const deleteUser = React.useCallback(async (uid: string) => {
+    await firebase
+      .app()
+      .functions('asia-northeast1')
+      .httpsCallable('deleteUser')({ uid })
+  }, [])
+
+  return { signup, login, logout, setAdminUser, currentUser, getUsers, createUser, deleteUser }
 }

@@ -39,6 +39,22 @@ export const onCreateUser = functions
     }
   })
 
+export const onDeleteUser = functions
+  .region('asia-northeast1')
+  .auth.user()
+  .onDelete(async user => {
+    try {
+      await admin
+        .firestore()
+        .collection('users')
+        .doc(user.uid)
+        .delete()
+    } catch (error) {
+      console.error('error occurred', error)
+      throw new HttpsError('internal', 'internal server error')
+    }
+  })
+
 type SetAdminUserParams = {
   isAdmin: boolean
   uid: string
@@ -71,6 +87,18 @@ export const createUser = functions
     if (!context.auth) return { error: 'Not authorized.' }
     try {
       await admin.auth().createUser({ email: data.email, password: data.password })
+      return { message: 'success' }
+    } catch (error) {
+      return { error }
+    }
+  })
+
+export const deleteUser = functions
+  .region('asia-northeast1')
+  .https.onCall(async (data, context) => {
+    if (!context.auth) return { error: 'Not authorized.' }
+    try {
+      await admin.auth().deleteUser(data.uid)
       return { message: 'success' }
     } catch (error) {
       return { error }

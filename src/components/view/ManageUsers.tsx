@@ -13,9 +13,14 @@ import * as T from '@/model/types'
 import { Visibility } from '@material-ui/icons'
 import { CreateUserModal } from '@/components'
 import firebase from 'firebase/app'
+import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded'
+import { useFirebase } from '@/hooks'
+
+type User = T.User & { uid: string }
 
 export const ManageUsers: React.FC = () => {
-  const [users, setUsers] = React.useState<T.User[]>([])
+  const [users, setUsers] = React.useState<User[]>([])
+  const { deleteUser } = useFirebase()
 
   React.useEffect(() => {
     const unsubscribe = firebase
@@ -24,15 +29,16 @@ export const ManageUsers: React.FC = () => {
       .onSnapshot(querySnapshot => {
         for (const change of querySnapshot.docChanges()) {
           if (change.type === 'added') {
-            setUsers(users => [...users, change.doc.data() as T.User])
+            setUsers(users => [...users, { ...change.doc.data(), uid: change.doc.id } as User])
           } else if (change.type === 'modified') {
             setUsers(users =>
               users.map(user => {
                 const changeData = change.doc.data() as T.User
+                const uid = change.doc.id
                 if (user.email === changeData.email) {
-                  return changeData
+                  return { ...changeData, uid }
                 }
-                return user
+                return { ...user, uid }
               })
             )
           } else if (change.type === 'removed') {
@@ -65,8 +71,8 @@ export const ManageUsers: React.FC = () => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.isAdmin ? '管理者' : '-'}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => console.log(user)}>
-                    <Visibility />
+                  <IconButton onClick={() => deleteUser(user.uid)}>
+                    <HighlightOffRoundedIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>
