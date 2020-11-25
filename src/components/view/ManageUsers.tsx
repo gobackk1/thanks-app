@@ -15,12 +15,15 @@ import { CreateUserModal } from '@/components'
 import firebase from 'firebase/app'
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded'
 import { useFirebase } from '@/hooks'
+import EditRoundedIcon from '@material-ui/icons/EditRounded'
+import * as UpdateUserModal from '@/context/UpdateUserModalContext'
 
 type User = T.User & { uid: string }
 
 export const ManageUsers: React.FC = () => {
   const [users, setUsers] = React.useState<User[]>([])
   const { deleteUser } = useFirebase()
+  const { openUpdateUserModal } = React.useContext(UpdateUserModal.Context)
 
   React.useEffect(() => {
     const unsubscribe = firebase
@@ -71,6 +74,14 @@ export const ManageUsers: React.FC = () => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.isAdmin ? '管理者' : '-'}</TableCell>
                 <TableCell>
+                  <IconButton
+                    onClick={() => {
+                      openUpdateUserModal(user)
+                      console.log('buttonClick', user.uid)
+                    }}
+                  >
+                    <EditRoundedIcon />
+                  </IconButton>
                   <IconButton onClick={() => deleteUser(user.uid)}>
                     <HighlightOffRoundedIcon />
                   </IconButton>
