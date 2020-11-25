@@ -16,6 +16,7 @@ type ReturnType = {
   logout: () => Promise<void>
   setAdminUser: (param: { password: string; uid: string }) => Promise<void>
   currentUser: firebase.User | null
+  getUsers: () => Promise<T.User[]>
 }
 
 const db = firebase.firestore()
@@ -70,5 +71,14 @@ export const useFirebase = (): ReturnType => {
 
   const currentUser = firebase.auth().currentUser
 
-  return { signup, login, logout, setAdminUser, currentUser }
+  const getUsers = React.useCallback(async () => {
+    const users: T.User[] = []
+    const snapshot = await db.collection('users').get()
+    snapshot.forEach(doc => {
+      users.push(doc.data() as T.User)
+    })
+    return users
+  }, [])
+
+  return { signup, login, logout, setAdminUser, currentUser, getUsers }
 }
