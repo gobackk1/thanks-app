@@ -7,4 +7,5 @@ export type User = {
     available: number
     recieved: number
   }
+  isAdmin: boolean
 }
