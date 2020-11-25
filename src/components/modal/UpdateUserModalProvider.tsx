@@ -21,17 +21,20 @@ export const UpdateUserModalProvider: React.FC = ({ children }) => {
   const { updateUser } = useFirebase()
 
   React.useEffect(() => {
-    reset()
+    return () => reset()
   }, [reset])
 
-  const handleClose = () => {
+  const handleClose = React.useCallback(() => {
     setOpen(false)
-  }
+  }, [])
 
-  const openUpdateUserModal = (user: any) => {
+  const openUpdateUserModal = React.useCallback((user: any) => {
     setOpen(true)
     setState(user)
-  }
+    setTimeout(() => {
+      document.querySelector<HTMLInputElement>('#updateUserModalNameInput')?.focus()
+    })
+  }, [])
 
   React.useEffect(() => {
     register({ name: 'name' })
@@ -90,6 +93,7 @@ export const UpdateUserModalProvider: React.FC = ({ children }) => {
                 variant="filled"
                 required
                 fullWidth
+                id="updateUserModalNameInput"
               />
               <Button type="submit">submit</Button>
             </form>
