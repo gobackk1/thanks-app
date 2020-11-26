@@ -10,6 +10,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { DefaultRootState } from 'react-redux'
 import { usersReducer } from './users/reducer'
+import { messagesReducer } from './messages/reducer'
 
 const enhancer =
   process.env.NODE_ENV === 'development'
@@ -20,7 +21,8 @@ const reducers: Reducer<CombinedState<DefaultRootState>, AnyAction> = combineRed
   DefaultRootState,
   AnyAction
 >({
-  users: usersReducer
+  users: usersReducer,
+  messages: messagesReducer
 })
 
 export const store = createStore(reducers, enhancer)

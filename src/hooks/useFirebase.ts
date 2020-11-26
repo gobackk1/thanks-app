@@ -5,6 +5,7 @@ import * as T from '@/model/types'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useHistory } from 'react-router-dom'
 import { setUser, deleteUser as deleteUserAction } from '@/redux/users/actions'
+import { setMessage } from '@/redux/messages/actions'
 import { useDispatch } from 'react-redux'
 
 type Authentication = {
@@ -29,6 +30,7 @@ type ReturnType = {
   deleteUser: (uid: string) => Promise<void>
   updateUser: (user: any) => Promise<void>
   subscribeUsers: () => void
+  subscribeMessages: () => void
   sendMessage: (message: SendMessageParams) => Promise<void>
 }
 
@@ -147,6 +149,22 @@ export const useFirebase = (): ReturnType => {
     })
   }, [dispatch])
 
+  const subscribeMessages = React.useCallback(() => {
+    db.collectionGroup('messages')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(querySnapshot => {
+        for (const change of querySnapshot.docChanges()) {
+          if (change.type === 'added') {
+            dispatch(setMessage({ data: change.doc.data() as T.Message, mid: change.doc.id }))
+          } else if (change.type === 'modified') {
+            dispatch(setMessage({ data: change.doc.data() as T.Message, mid: change.doc.id }))
+          } else if (change.type === 'removed') {
+            // TODO:
+          }
+        }
+      })
+  }, [dispatch])
+
   return {
     signup,
     login,
@@ -158,6 +176,7 @@ export const useFirebase = (): ReturnType => {
     deleteUser,
     updateUser,
     subscribeUsers,
+    subscribeMessages,
     sendMessage
   }
 }

@@ -22,7 +22,7 @@ const adminList = [
 ]
 
 export const PageLayout: React.FC = ({ children }) => {
-  const { subscribeUsers } = useFirebase()
+  const { subscribeUsers, subscribeMessages } = useFirebase()
   const styles = useStyles()
   const history = useHistory()
   const [state] = React.useContext(LoginUser.Context)
@@ -31,7 +31,8 @@ export const PageLayout: React.FC = ({ children }) => {
   useAuthentication()
   React.useEffect(() => {
     subscribeUsers()
-  }, [subscribeUsers])
+    subscribeMessages()
+  }, [subscribeUsers, subscribeMessages])
 
   return state.isLoggingIn ? (
     <div className={styles.spinner}>

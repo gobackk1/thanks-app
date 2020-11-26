@@ -11,5 +11,8 @@ service cloud.firestore {
         allow read,create,delete,update: if true
       }
     }
+    match /{path=**}/messages/{message_id} {
+      allow read,create,delete,update: if true
+    }
   }
 }
