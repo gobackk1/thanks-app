@@ -1,5 +1,5 @@
-import { useUsersState } from '@/hooks'
-import { Button, MenuItem, Paper, Select, TextField } from '@material-ui/core'
+import { useFirebase, useUsersState } from '@/hooks'
+import { Button, MenuItem, Paper, TextField } from '@material-ui/core'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -8,12 +8,10 @@ const options = [5, 10, 15, 20, 25]
 export const MessageForm: React.FC = () => {
   const { register, control, handleSubmit } = useForm()
   const { getUsers } = useUsersState()
-  const send = (value: any) => {
-    console.log(value)
-  }
+  const { sendMessage } = useFirebase()
 
   return (
-    <form onSubmit={handleSubmit(send)}>
+    <form onSubmit={handleSubmit(sendMessage)}>
       <Paper>
         MessageForm
         <Controller
@@ -42,9 +40,9 @@ export const MessageForm: React.FC = () => {
             </TextField>
           }
           control={control}
-          name="target"
+          name="uid"
         />
-        <TextField name="message" label="メッセージ" multiline rows={4} inputRef={register} />
+        <TextField name="text" label="メッセージ" multiline rows={4} inputRef={register} />
         <Button type="submit">送る</Button>
       </Paper>
     </form>

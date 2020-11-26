@@ -12,6 +12,12 @@ type Authentication = {
   password: string
 }
 
+type SendMessageParams = {
+  uid: string
+  point: number
+  text: string
+}
+
 type ReturnType = {
   signup: (value: Authentication) => Promise<void>
   login: (value: Authentication) => Promise<void>
@@ -23,6 +29,7 @@ type ReturnType = {
   deleteUser: (uid: string) => Promise<void>
   updateUser: (user: any) => Promise<void>
   subscribeUsers: () => void
+  sendMessage: (message: SendMessageParams) => Promise<void>
 }
 
 const db = firebase.firestore()
@@ -108,6 +115,24 @@ export const useFirebase = (): ReturnType => {
       .httpsCallable('updateUser')({ uid: user.uid, name: user.name })
   }, [])
 
+  const sendMessage = React.useCallback(
+    async params => {
+      if (!currentUser) return
+
+      const message: T.Message = {
+        text: params.text,
+        point: Number(params.point),
+        senderRef: db.collection('users').doc(currentUser.uid),
+        recieverRef: db.collection('users').doc(params.uid),
+        likes: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }
+
+      await db.collection(`users/${params.uid}/messages`).add(message)
+    },
+    [currentUser]
+  )
+
   const subscribeUsers = React.useCallback(() => {
     db.collection('users').onSnapshot(querySnapshot => {
       for (const change of querySnapshot.docChanges()) {
@@ -132,6 +157,7 @@ export const useFirebase = (): ReturnType => {
     createUser,
     deleteUser,
     updateUser,
-    subscribeUsers
+    subscribeUsers,
+    sendMessage
   }
 }
