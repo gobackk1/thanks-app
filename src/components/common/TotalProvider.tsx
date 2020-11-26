@@ -7,15 +7,15 @@ import { Provider as ReduxStoreProvider } from 'react-redux'
 
 export const TotalProvider: React.FC = ({ children }) => {
   return (
-    <LoginUserContextProvider>
-      <SnackbarProvider
-        autoHideDuration={5000}
-        position={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <UpdateUserModalProvider>
-          <ReduxStoreProvider store={store}>{children}</ReduxStoreProvider>
-        </UpdateUserModalProvider>
-      </SnackbarProvider>
-    </LoginUserContextProvider>
+    <ReduxStoreProvider store={store}>
+      <LoginUserContextProvider>
+        <SnackbarProvider
+          autoHideDuration={5000}
+          position={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <UpdateUserModalProvider>{children}</UpdateUserModalProvider>
+        </SnackbarProvider>
+      </LoginUserContextProvider>
+    </ReduxStoreProvider>
   )
 }
