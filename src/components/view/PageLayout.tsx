@@ -4,7 +4,7 @@ import HomeRoundedIcon from '@material-ui/icons/HomeRounded'
 import RedeemRoundedIcon from '@material-ui/icons/RedeemRounded'
 import { useHistory } from 'react-router-dom'
 import * as LoginUser from '@/context/LoginUserContext'
-import { useAuthentication } from '@/hooks'
+import { useAuthentication, useFirebase } from '@/hooks'
 import PeopleRoundedIcon from '@material-ui/icons/PeopleRounded'
 import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded'
 import ListAltRoundedIcon from '@material-ui/icons/ListAltRounded'
@@ -22,11 +22,16 @@ const adminList = [
 ]
 
 export const PageLayout: React.FC = ({ children }) => {
+  const { subscribeUsers } = useFirebase()
   const styles = useStyles()
   const history = useHistory()
-  useAuthentication()
   const [state] = React.useContext(LoginUser.Context)
-  console.log(state, 'PageLayout')
+
+  useAuthentication()
+  React.useEffect(() => {
+    subscribeUsers()
+  }, [subscribeUsers])
+
   return state.isLoggingIn ? (
     <div className={styles.spinner}>
       <LoadingSpinner />
