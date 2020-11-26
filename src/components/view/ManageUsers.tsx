@@ -17,42 +17,44 @@ import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded'
 import { useFirebase } from '@/hooks'
 import EditRoundedIcon from '@material-ui/icons/EditRounded'
 import * as UpdateUserModal from '@/context/UpdateUserModalContext'
+import { useSelector } from 'react-redux'
+import { useUsersState } from '@/hooks/useUsersState'
 
 type User = T.User & { uid: string }
 
 export const ManageUsers: React.FC = () => {
-  // TODO ここのstate は redux に移すかも
-  const [users, setUsers] = React.useState<User[]>([])
+  const users = useSelector(state => state.users)
   const { deleteUser } = useFirebase()
   const { openUpdateUserModal } = React.useContext(UpdateUserModal.Context)
+  const { getUsers } = useUsersState()
 
   React.useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection('users')
-      .onSnapshot(querySnapshot => {
-        for (const change of querySnapshot.docChanges()) {
-          if (change.type === 'added') {
-            setUsers(users => [...users, { ...change.doc.data(), uid: change.doc.id } as User])
-          } else if (change.type === 'modified') {
-            setUsers(users =>
-              users.map(user => {
-                const changeData = change.doc.data() as T.User
-                const uid = change.doc.id
-                if (user.uid === uid) {
-                  return { ...changeData, uid }
-                }
-                return user
-              })
-            )
-          } else if (change.type === 'removed') {
-            setUsers(users => users.filter(user => user.email !== change.doc.data().email))
-          }
-        }
-      })
-    return () => {
-      unsubscribe()
-    }
+    // const unsubscribe = firebase
+    //   .firestore()
+    //   .collection('users')
+    //   .onSnapshot(querySnapshot => {
+    //     for (const change of querySnapshot.docChanges()) {
+    //       if (change.type === 'added') {
+    //         setUsers(users => [...users, { ...change.doc.data(), uid: change.doc.id } as User])
+    //       } else if (change.type === 'modified') {
+    //         setUsers(users =>
+    //           users.map(user => {
+    //             const changeData = change.doc.data() as T.User
+    //             const uid = change.doc.id
+    //             if (user.uid === uid) {
+    //               return { ...changeData, uid }
+    //             }
+    //             return user
+    //           })
+    //         )
+    //       } else if (change.type === 'removed') {
+    //         setUsers(users => users.filter(user => user.email !== change.doc.data().email))
+    //       }
+    //     }
+    //   })
+    // return () => {
+    //   unsubscribe()
+    // }
   }, [])
 
   return (
@@ -69,7 +71,7 @@ export const ManageUsers: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map(user => (
+            {getUsers().map(user => (
               <TableRow key={user.email}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
