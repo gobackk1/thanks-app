@@ -6,6 +6,10 @@ service cloud.firestore {
     }
     match /users/{uid} {
       allow read,create,delete,update: if true
+
+      match /messages/{message_id} {
+        allow read,create,delete,update: if true
+      }
     }
   }
 }
