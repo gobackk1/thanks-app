@@ -79,7 +79,7 @@ export const useFirebase = (): ReturnType => {
     const result = await firebase
       .app()
       .functions('asia-northeast1')
-      .httpsCallable('setAdminUser')(params)
+      .httpsCallable('setAdminUser-setAdminUser')(params)
     console.log('setAdminUser', result)
   }, [])
 
@@ -98,21 +98,21 @@ export const useFirebase = (): ReturnType => {
     await firebase
       .app()
       .functions('asia-northeast1')
-      .httpsCallable('createUser')(values)
+      .httpsCallable('createUser-createUser')(values)
   }, [])
 
   const deleteUser = React.useCallback(async (uid: string) => {
     await firebase
       .app()
       .functions('asia-northeast1')
-      .httpsCallable('deleteUser')({ uid })
+      .httpsCallable('deleteUser-deleteUser')({ uid })
   }, [])
 
   const updateUser = React.useCallback(async user => {
     await firebase
       .app()
       .functions('asia-northeast1')
-      .httpsCallable('updateUser')({ uid: user.uid, name: user.name })
+      .httpsCallable('updateUser-updateUser')({ uid: user.uid, name: user.name })
   }, [])
 
   const sendMessage = React.useCallback(
