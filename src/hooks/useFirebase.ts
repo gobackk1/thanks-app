@@ -128,7 +128,7 @@ export const useFirebase = (): ReturnType => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }
 
-      await db.collection(`users/${params.uid}/messages`).add(message)
+      await db.collection(`users/${currentUser.uid}/messages`).add(message)
     },
     [currentUser]
   )
