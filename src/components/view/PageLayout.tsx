@@ -4,7 +4,7 @@ import HomeRoundedIcon from '@material-ui/icons/HomeRounded'
 import RedeemRoundedIcon from '@material-ui/icons/RedeemRounded'
 import { useHistory } from 'react-router-dom'
 import * as LoginUser from '@/context/LoginUserContext'
-import { useAuthentication, useFirebase } from '@/hooks'
+import { useAuthentication, useFirebase, useUsersState } from '@/hooks'
 import PeopleRoundedIcon from '@material-ui/icons/PeopleRounded'
 import ImportContactsRoundedIcon from '@material-ui/icons/ImportContactsRounded'
 import ListAltRoundedIcon from '@material-ui/icons/ListAltRounded'
@@ -26,6 +26,7 @@ export const PageLayout: React.FC = ({ children }) => {
   const styles = useStyles()
   const history = useHistory()
   const [state] = React.useContext(LoginUser.Context)
+  const { currentUser } = useUsersState()
 
   useAuthentication()
   React.useEffect(() => {
@@ -60,6 +61,7 @@ export const PageLayout: React.FC = ({ children }) => {
                 <ListItemText primary={text} />
               </ListItem>
             ))}
+          {currentUser?.name}
         </Drawer>
       )}
 

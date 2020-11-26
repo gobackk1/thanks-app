@@ -2,7 +2,7 @@ import { reducerWithInitialState } from 'typescript-fsa-reducers'
 import { setUser, deleteUser } from './actions'
 import * as T from '@/model/types'
 
-type UserData = { uid: string } & T.User
+export type UserData = { uid: string } & T.User
 
 export interface UsersState {
   data: {

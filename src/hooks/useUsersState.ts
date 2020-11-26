@@ -1,8 +1,17 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import * as LoginUser from '@/context/LoginUserContext'
+import { UsersState, UserData } from '@/redux/users/reducer'
 
-export const useUsersState = () => {
+type ReturnType = {
+  users: UsersState
+  getUsers: () => UserData[]
+  currentUser: UserData | null
+}
+
+export const useUsersState = (): ReturnType => {
   const usersState = useSelector(state => state.users)
+  const [{ uid }] = React.useContext(LoginUser.Context)
 
   const users = React.useMemo(() => usersState, [usersState])
 
@@ -10,5 +19,7 @@ export const useUsersState = () => {
     return Object.values(users.data)
   }, [users.data])
 
-  return { users, getUsers }
+  const currentUser = React.useMemo(() => (uid ? users.data[uid] : null), [uid, users.data])
+
+  return { users, getUsers, currentUser }
 }
