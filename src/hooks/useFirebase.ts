@@ -4,6 +4,8 @@ import { useSnackbarContext } from '@/hooks'
 import * as T from '@/model/types'
 import * as LoginUser from '@/context/LoginUserContext'
 import { useHistory } from 'react-router-dom'
+import { setUser, deleteUser as deleteUserAction } from '@/redux/users/actions'
+import { useDispatch } from 'react-redux'
 
 type Authentication = {
   email: string
@@ -20,6 +22,7 @@ type ReturnType = {
   createUser: (value: Authentication) => Promise<void>
   deleteUser: (uid: string) => Promise<void>
   updateUser: (user: any) => Promise<void>
+  subscribeUsers: () => void
 }
 
 const db = firebase.firestore()
@@ -28,6 +31,7 @@ export const useFirebase = (): ReturnType => {
   const { showSnackbar } = useSnackbarContext()
   const [state, setState] = React.useContext(LoginUser.Context)
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const login = React.useCallback(
     async ({ email, password }: Authentication) => {
@@ -104,6 +108,20 @@ export const useFirebase = (): ReturnType => {
       .httpsCallable('updateUser')({ uid: user.uid, name: user.name })
   }, [])
 
+  const subscribeUsers = React.useCallback(() => {
+    db.collection('users').onSnapshot(querySnapshot => {
+      for (const change of querySnapshot.docChanges()) {
+        if (change.type === 'added') {
+          dispatch(setUser({ data: change.doc.data() as T.User, uid: change.doc.id }))
+        } else if (change.type === 'modified') {
+          dispatch(setUser({ data: change.doc.data() as T.User, uid: change.doc.id }))
+        } else if (change.type === 'removed') {
+          dispatch(deleteUserAction(change.doc.id))
+        }
+      }
+    })
+  }, [dispatch])
+
   return {
     signup,
     login,
@@ -113,6 +131,7 @@ export const useFirebase = (): ReturnType => {
     getUsers,
     createUser,
     deleteUser,
-    updateUser
+    updateUser,
+    subscribeUsers
   }
 }
