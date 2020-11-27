@@ -16,7 +16,6 @@ export const useMessagesState = (): ReturnType => {
 
   const getMessages = React.useCallback(() => {
     return Object.values(messages.data).sort((x, y) => {
-      console.log(x, y)
       // NOTE: message ドキュメント作成時は、nullになるので
       if (!x.createdAt || !y.createdAt) return 1
       return y.createdAt.seconds - x.createdAt.seconds
