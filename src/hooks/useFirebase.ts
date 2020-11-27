@@ -30,7 +30,7 @@ type ReturnType = {
   deleteUser: (uid: string) => Promise<void>
   updateUser: (user: any) => Promise<void>
   subscribeUsers: () => void
-  subscribeMessages: () => void
+  subscribeMessages: (last?: T.Message) => void
   sendMessage: (message: SendMessageParams) => Promise<void>
 }
 
@@ -149,10 +149,12 @@ export const useFirebase = (): ReturnType => {
     })
   }, [dispatch])
 
-  const subscribeMessages = React.useCallback(() => {
-    db.collectionGroup('messages')
-      .orderBy('createdAt', 'desc')
-      .onSnapshot(querySnapshot => {
+  type QuerySnapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+
+  const subscribeMessages = React.useCallback(
+    (last?: T.Message) => {
+      const query = db.collectionGroup('messages').orderBy('createdAt', 'desc')
+      const onSnapshot = (querySnapshot: QuerySnapshot): void => {
         for (const change of querySnapshot.docChanges()) {
           if (change.type === 'added') {
             dispatch(setMessage({ data: change.doc.data() as T.Message, mid: change.doc.id }))
@@ -162,8 +164,19 @@ export const useFirebase = (): ReturnType => {
             // TODO:
           }
         }
-      })
-  }, [dispatch])
+      }
+
+      if (last) {
+        query
+          .startAfter(last.createdAt)
+          .limit(10)
+          .onSnapshot(onSnapshot)
+      } else {
+        query.limit(10).onSnapshot(onSnapshot)
+      }
+    },
+    [dispatch]
+  )
 
   return {
     signup,
