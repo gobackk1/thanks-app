@@ -24,7 +24,7 @@ export const MessageList: React.FC = () => {
             {reciever?.avatarURL}
             {reciever?.name}
             {message.text}
-            {message.createdAt.seconds}
+            {message.createdAt?.seconds}
             <br />
           </Paper>
         )
