@@ -9,9 +9,16 @@ service cloud.firestore {
 
       match /messages/{message_id} {
         allow read,create,delete,update: if true
+
+        match /comments/{coment_id} {
+          allow read,create,delete,update: if true
+        }
       }
     }
     match /{path=**}/messages/{message_id} {
+      allow read,create,delete,update: if true
+    }
+    match /{path=**}/comments/{comment_id} {
       allow read,create,delete,update: if true
     }
   }

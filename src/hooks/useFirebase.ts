@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { setUser, deleteUser as deleteUserAction } from '@/redux/users/actions'
 import { setMessage } from '@/redux/messages/actions'
 import { useDispatch } from 'react-redux'
+import { setComment } from '@/redux/comments/actions'
 
 type Authentication = {
   email: string
@@ -150,14 +151,34 @@ export const useFirebase = (): ReturnType => {
   }, [dispatch])
 
   type QuerySnapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-
+  // const comment: T.Comment = {
+  //   text: doc.data().text,
+  //   senderRef: db.collection('users').doc(currentUser.uid),
+  //   createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  // }
   const subscribeMessages = React.useCallback(
     (last?: T.Message) => {
+      if (!currentUser) return
       const query = db.collectionGroup('messages').orderBy('createdAt', 'desc')
       const onSnapshot = (querySnapshot: QuerySnapshot): void => {
         for (const change of querySnapshot.docChanges()) {
           if (change.type === 'added') {
             dispatch(setMessage({ data: change.doc.data() as T.Message, mid: change.doc.id }))
+            // TODO: comment もページングする
+            change.doc.ref
+              .collection('comments')
+              .get()
+              .then(snapshot =>
+                snapshot.forEach(doc => {
+                  dispatch(
+                    setComment({
+                      data: doc.data() as T.Comment,
+                      cid: doc.id,
+                      mid: doc.ref.parent.parent!.id
+                    })
+                  )
+                })
+              )
           } else if (change.type === 'modified') {
             dispatch(setMessage({ data: change.doc.data() as T.Message, mid: change.doc.id }))
           } else if (change.type === 'removed') {
@@ -175,7 +196,7 @@ export const useFirebase = (): ReturnType => {
         query.limit(10).onSnapshot(onSnapshot)
       }
     },
-    [dispatch]
+    [dispatch, currentUser]
   )
 
   return {

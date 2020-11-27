@@ -11,6 +11,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { DefaultRootState } from 'react-redux'
 import { usersReducer } from './users/reducer'
 import { messagesReducer } from './messages/reducer'
+import { commentsReducer } from './comments/reducer'
 
 const enhancer =
   process.env.NODE_ENV === 'development'
@@ -22,7 +23,8 @@ const reducers: Reducer<CombinedState<DefaultRootState>, AnyAction> = combineRed
   AnyAction
 >({
   users: usersReducer,
-  messages: messagesReducer
+  messages: messagesReducer,
+  comments: commentsReducer
 })
 
 export const store = createStore(reducers, enhancer)

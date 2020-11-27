@@ -1,4 +1,4 @@
-import { useFirebase, useMessagesState, useUsersState } from '@/hooks'
+import { useCommentsState, useFirebase, useMessagesState, useUsersState } from '@/hooks'
 import { Button, createStyles, makeStyles, Paper } from '@material-ui/core'
 import React from 'react'
 
@@ -7,6 +7,7 @@ export const MessageList: React.FC = () => {
   const { getUserById } = useUsersState()
   const { subscribeMessages } = useFirebase()
   const styles = useStyles()
+  const { getCommentsByMid } = useCommentsState()
 
   const nextPage = React.useCallback(() => {
     subscribeMessages(messages.slice(-1)[0])
@@ -24,6 +25,9 @@ export const MessageList: React.FC = () => {
             {message.text}
             {message.createdAt?.seconds}
             <br />
+            {getCommentsByMid(message.mid).map(comment => (
+              <div key={comment.cid}>{comment.text}</div>
+            ))}
           </Paper>
         )
       })}
