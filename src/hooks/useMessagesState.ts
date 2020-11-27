@@ -4,23 +4,32 @@ import { useSelector } from 'react-redux'
 import { MessagesState, MessageData } from '@/redux/messages/reducer'
 
 type ReturnType = {
-  messages: MessagesState
+  data: ValueOf<MessagesState, 'data'>
   getMessages: () => MessageData[]
+  messages: MessageData[]
 }
 
 export const useMessagesState = (): ReturnType => {
   const messagesState = useSelector(state => state.messages)
   // const [{ uid }] = React.useContext(LoginUser.Context)
 
-  const messages = React.useMemo(() => messagesState, [messagesState])
+  const data = React.useMemo(() => messagesState.data, [messagesState.data])
 
   const getMessages = React.useCallback(() => {
-    return Object.values(messages.data).sort((x, y) => {
+    return Object.values(data).sort((x, y) => {
       // NOTE: message ドキュメント作成時は、nullになるので
       if (!x.createdAt || !y.createdAt) return 1
       return y.createdAt.seconds - x.createdAt.seconds
     })
-  }, [messages.data])
+  }, [data])
 
-  return { messages, getMessages }
+  const messages = React.useMemo(() => {
+    return Object.values(data).sort((x, y) => {
+      // NOTE: message ドキュメント作成時は、nullになるので
+      if (!x.createdAt || !y.createdAt) return 1
+      return y.createdAt.seconds - x.createdAt.seconds
+    })
+  }, [data])
+
+  return { data, getMessages, messages }
 }

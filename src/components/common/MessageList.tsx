@@ -3,12 +3,10 @@ import { Button, createStyles, makeStyles, Paper } from '@material-ui/core'
 import React from 'react'
 
 export const MessageList: React.FC = () => {
-  const { getMessages } = useMessagesState()
+  const { messages } = useMessagesState()
   const { getUserById } = useUsersState()
   const { subscribeMessages } = useFirebase()
   const styles = useStyles()
-
-  const messages = React.useMemo(() => getMessages(), [getMessages])
 
   const nextPage = React.useCallback(() => {
     subscribeMessages(messages.slice(-1)[0])
