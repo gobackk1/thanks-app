@@ -7,6 +7,7 @@ type ReturnType = {
   users: UsersState
   getUsers: () => UserData[]
   currentUser: UserData | null
+  getUserById: (uid: string) => UserData | null
 }
 
 export const useUsersState = (): ReturnType => {
@@ -19,7 +20,14 @@ export const useUsersState = (): ReturnType => {
     return Object.values(users.data)
   }, [users.data])
 
+  const getUserById = React.useCallback(
+    (uid: string) => {
+      return getUsers().find(user => user.uid === uid) || null
+    },
+    [getUsers]
+  )
+
   const currentUser = React.useMemo(() => (uid ? users.data[uid] : null), [uid, users.data])
 
-  return { users, getUsers, currentUser }
+  return { users, getUsers, currentUser, getUserById }
 }
